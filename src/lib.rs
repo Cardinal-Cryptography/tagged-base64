@@ -62,8 +62,8 @@ use serde::{
 };
 use snafu::Snafu;
 
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen::prelude::*;
+// #[cfg(target_arch = "wasm32")]
+// use wasm_bindgen::prelude::*;
 
 pub use tagged_base64_macros::tagged;
 
@@ -76,7 +76,7 @@ pub const TB64_CONFIG: base64::Config = base64::URL_SAFE_NO_PAD;
 
 /// A structure holding a string tag, vector of bytes, and a checksum
 /// covering the tag and the bytes.
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+// #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(
     feature = "ark-serialize",
@@ -131,7 +131,7 @@ impl<'a> Deserialize<'a> for TaggedBase64 {
 ///
 /// The primary difference is that JsTaggedBase64 returns errors
 /// of type JsValue.
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+// #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct JsTaggedBase64 {
     tb64: TaggedBase64,
@@ -169,7 +169,7 @@ pub enum Tb64Error {
 }
 
 /// Converts a TaggedBase64 value to a String.
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+// #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub fn to_string(tb64: &TaggedBase64) -> String {
     let value = &mut tb64.value.clone();
     value.push(tb64.checksum);
@@ -361,71 +361,71 @@ impl AsRef<[u8]> for TaggedBase64 {
 ///
 /// Note: Type parameters aren't supported by `wasm-pack` yet so this
 /// can't be included in the TaggedBase64 type implementation.
-#[cfg(target_arch = "wasm32")]
-pub fn to_jsvalue<D: Display>(d: D) -> JsValue {
-    JsValue::from_str(&format!("{}", d))
-}
+// #[cfg(target_arch = "wasm32")]
+// pub fn to_jsvalue<D: Display>(d: D) -> JsValue {
+//     JsValue::from_str(&format!("{}", d))
+// }
 
-#[cfg(target_arch = "wasm32")]
-impl From<Tb64Error> for JsValue {
-    fn from(error: Tb64Error) -> JsValue {
-        to_jsvalue(format!("{}", error))
-    }
-}
+// #[cfg(target_arch = "wasm32")]
+// impl From<Tb64Error> for JsValue {
+//     fn from(error: Tb64Error) -> JsValue {
+//         to_jsvalue(format!("{}", error))
+//     }
+// }
 
-#[cfg(target_arch = "wasm32")]
-#[wasm_bindgen]
-impl JsTaggedBase64 {
-    #[wasm_bindgen(constructor)]
-    pub fn new(tag: &str, value: &[u8]) -> Result<JsTaggedBase64, JsValue> {
-        let result = TaggedBase64::new(tag, value);
-        match result {
-            Ok(tb) => Ok(JsTaggedBase64 { tb64: tb }),
-            Err(err) => Err(to_jsvalue(err)),
-        }
-    }
-
-    /// Parses a string of the form tag~value into a TaggedBase64 value.
-    ///
-    /// The tag is restricted to URL-safe base64 ASCII characters. The tag
-    /// may be empty. The delimiter is required.
-    ///
-    /// The value is a base64-encoded string, using the URL-safe character
-    /// set, and no padding is used.
-    pub fn parse(tb64: &str) -> Result<TaggedBase64, JsValue> {
-        let result = TaggedBase64::parse(tb64)?;
-        Ok(result)
-    }
-
-    /// Gets the tag of a TaggedBase64 instance.
-    pub fn tag(&self) -> String {
-        TaggedBase64::tag(&self.tb64)
-    }
-
-    /// Gets the value of a TaggedBase64 instance.
-    pub fn value(&self) -> Vec<u8> {
-        TaggedBase64::value(&self.tb64)
-    }
-
-    /// Sets the tag of a JsTaggedBase64 instance.
-    pub fn set_tag(&mut self, tag: &str) {
-        self.tb64.set_tag(tag);
-    }
-
-    /// Sets the value of a JsTaggedBase64 instance.
-    pub fn set_value(&mut self, value: &[u8]) {
-        self.tb64.set_value(value);
-    }
-
-    /// Formats the JsTaggedBase64 instance as a URL-safe string.
-    //
-    // Note: this method is included for WASM bindings, since the trait methods from Display don't
-    // get compiled to WASM.
-    #[allow(clippy::inherent_to_string_shadow_display)]
-    pub fn to_string(&self) -> String {
-        self.tb64.to_string()
-    }
-}
+// #[cfg(target_arch = "wasm32")]
+// #[wasm_bindgen]
+// impl JsTaggedBase64 {
+//     #[wasm_bindgen(constructor)]
+//     pub fn new(tag: &str, value: &[u8]) -> Result<JsTaggedBase64, JsValue> {
+//         let result = TaggedBase64::new(tag, value);
+//         match result {
+//             Ok(tb) => Ok(JsTaggedBase64 { tb64: tb }),
+//             Err(err) => Err(to_jsvalue(err)),
+//         }
+//     }
+//
+//     /// Parses a string of the form tag~value into a TaggedBase64 value.
+//     ///
+//     /// The tag is restricted to URL-safe base64 ASCII characters. The tag
+//     /// may be empty. The delimiter is required.
+//     ///
+//     /// The value is a base64-encoded string, using the URL-safe character
+//     /// set, and no padding is used.
+//     pub fn parse(tb64: &str) -> Result<TaggedBase64, JsValue> {
+//         let result = TaggedBase64::parse(tb64)?;
+//         Ok(result)
+//     }
+//
+//     /// Gets the tag of a TaggedBase64 instance.
+//     pub fn tag(&self) -> String {
+//         TaggedBase64::tag(&self.tb64)
+//     }
+//
+//     /// Gets the value of a TaggedBase64 instance.
+//     pub fn value(&self) -> Vec<u8> {
+//         TaggedBase64::value(&self.tb64)
+//     }
+//
+//     /// Sets the tag of a JsTaggedBase64 instance.
+//     pub fn set_tag(&mut self, tag: &str) {
+//         self.tb64.set_tag(tag);
+//     }
+//
+//     /// Sets the value of a JsTaggedBase64 instance.
+//     pub fn set_value(&mut self, value: &[u8]) {
+//         self.tb64.set_value(value);
+//     }
+//
+//     /// Formats the JsTaggedBase64 instance as a URL-safe string.
+//     //
+//     // Note: this method is included for WASM bindings, since the trait methods from Display don't
+//     // get compiled to WASM.
+//     #[allow(clippy::inherent_to_string_shadow_display)]
+//     pub fn to_string(&self) -> String {
+//         self.tb64.to_string()
+//     }
+// }
 
 /// Trait for types whose serialization is not human-readable.
 ///
