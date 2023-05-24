@@ -40,7 +40,14 @@
 //! allow safe transit to- and from JavaScript, including in URLs, as
 //! well as display and input in a user interface.
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
 #![allow(clippy::unused_unit)]
+extern crate alloc;
+
+use alloc::{format, vec};
+use alloc::string::{String, ToString};
+use alloc::vec::Vec;
 #[cfg(feature = "ark-serialize")]
 use ark_serialize::*;
 use core::fmt;
